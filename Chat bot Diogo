@@ -1,0 +1,81 @@
+import tkinter as tk
+from tkinter import ttk
+from tkinter import scrolledtext
+from tkinter import messagebox
+import time
+
+class ChatBotApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("ChatBot em Tkinter")
+        self.geometry("400x500")
+        self.resizable(width=False, height=False)
+
+        self.config(bg="white")
+
+        # Base de conhecimento do bot (perguntas e respostas)
+        self.base_conhecimento = {
+            "oi": "Olá! Como posso ajudar?",
+            "olá": "Olá! Como posso ajudar?",
+            "tudo bem?": "Estou bem, obrigado por perguntar!",
+            "como você está?": "Estou bem, obrigado por perguntar!",
+            "qual é o seu nome?": "Meu nome é ChatBot.",
+            "adeus": "Até mais! Volte logo.",
+            "tchau": "Até mais! Volte logo.",
+            "quem criou você?": "Fui criado por um desenvolvedor  chamado Diogo.",
+            "você gosta de música?": "Eu não tenho preferências pessoais, mas muitas pessoas gostam de música!",
+            "qual é a capital do Brasil?": "A capital do Brasil é Brasília.",
+            "quanto é 2 + 2?": "2 + 2 = 4",
+            "você sabe programar?": "Eu sou um programa de computador, então sim, de certa forma!",
+            "o que você pode fazer?": "Eu posso responder perguntas simples e ter conversas básicas."
+        }
+
+        self.construir_interface()
+
+    def construir_interface(self):
+        # Caixa de texto para exibir a conversa
+        self.conversa_texto = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=40, height=20)
+        self.conversa_texto.pack(padx=10, pady=10)
+
+        # Campo de entrada para o usuário digitar mensagens
+        self.entrada_usuario = ttk.Entry(self, width=40)
+        self.entrada_usuario.pack(padx=10, pady=10)
+
+        # Botão para enviar a mensagem
+        self.botao_enviar = ttk.Button(self, text="Enviar", command=self.enviar_mensagem)
+        self.botao_enviar.pack(padx=10, pady=10)
+
+        # Iniciar conversa
+        self.iniciar_conversa()
+
+    def iniciar_conversa(self):
+        mensagem_boas_vindas = "Olá! Eu sou o ChatBot. Como posso ajudar?"
+        self.bot_responder(mensagem_boas_vindas, delay=False)
+
+    def enviar_mensagem(self):
+        mensagem_usuario = self.entrada_usuario.get().strip()
+        if mensagem_usuario:
+            self.bot_responder(mensagem_usuario)
+            self.entrada_usuario.delete(0, tk.END)
+
+    def bot_responder(self, mensagem, delay=True):
+        if delay:
+            self.conversa_texto.insert(tk.END, f"Você: {mensagem}\n")
+            self.conversa_texto.yview(tk.END)
+            time.sleep(0.5)  # Simular um pequeno atraso para parecer mais natural
+
+        # Converter a mensagem para minúsculas para evitar problemas de capitalização
+        mensagem = mensagem.lower()
+
+        # Verificar se há uma resposta na base de conhecimento
+        if mensagem in self.base_conhecimento:
+            resposta = self.base_conhecimento[mensagem]
+        else:
+            resposta = "Desculpe, não entendi. Poderia repetir?"
+
+        self.conversa_texto.insert(tk.END, f"Bot: {resposta}\n")
+        self.conversa_texto.yview(tk.END)
+
+if __name__ == "__main__":
+    app = ChatBotApp()
+    app.mainloop()
